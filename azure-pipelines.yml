@@ -29,16 +29,21 @@ steps:
   displayName: 'npm install'# and build'
 
 - script: npx mocha
+  displayName: npx mocha
 
 - script: yarn install
+  displayName: yarn install
 
-- script: npm run compile
+#- script: npm run compile
 
 - script: tsc --target ES6 --strict true --project tsconfigs/production.json
+  displayName: tsc --target ES6 --strict true --project tsconfigs/production.json
 
 - script: mocha test --reporter mocha-junit-reporter
+  displayName: mocha test --reporter mocha-junit-reporter
 
 - script: npm test
+  displayName: npm test
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
@@ -53,13 +58,16 @@ steps:
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
 - script: webpack
+  displayName: webpack
 
 - script: npm run build
+  displayName: npm run build
 
 - script: |
     npm install -g @angular/cli
     npm install
     ng build --prod
+  displayName: 
 
 - script: |
     npm install webpack webpack-cli --save-dev
@@ -79,6 +87,7 @@ steps:
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
 - script: grunt                      # include any additional options that are needed
+  displayName: grunt
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -95,6 +104,7 @@ steps:
 - task: PublishBuildArtifacts@1
 
 - script: npm publish
+  displayName: npm publish
 
 - task: ArchiveFiles@2
   inputs:
