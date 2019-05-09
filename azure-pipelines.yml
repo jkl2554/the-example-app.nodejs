@@ -39,8 +39,8 @@ steps:
 #- script: tsc --target ES6 --strict true --project tsconfigs/production.json
 #  displayName: tsc --target ES6 --strict true --project tsconfigs/production.json
 
-- script: mocha test --reporter mocha-junit-reporter
-  displayName: mocha test --reporter mocha-junit-reporter
+#- script: mocha test --reporter mocha-junit-reporter
+#  displayName: mocha test --reporter mocha-junit-reporter
 
 - script: npm test
   displayName: npm test
