@@ -96,18 +96,6 @@ steps:
 
 - script: npm publish
 
-- task: Npm@1
-  inputs:
-     command: publish
-     publishRegistry: useExternalRegistry
-     publishEndpoint: https://my.npmregistry.com
-
-- task: Npm@1
-  inputs:
-     command: publish
-     publishRegistry: useFeed
-     publishFeed: https://my.npmregistry.com
-
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
