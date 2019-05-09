@@ -7,15 +7,109 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'  # examples of other options: 'macOS-10.13', 'vs2017-win2016', 'ubuntu-16.04'
+#strategy:
+#  matrix:
+#    node_8_x:
+#      node_version: 8.x
+#    node_9_x:
+#      node_version: 9.x
 
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '10.x'
+    versionSpec: '10.x'  # replace this value with the version that you need for your project
+#    versionSpec: $(node_version)
+
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
-    npm run build
+    npm install --only=dev #-g @angular/cli
+    npm run build 
   displayName: 'npm install and build'
+
+- script: npx mocha
+
+- script: yarn install
+
+- script: npm run compile
+
+- script: tsc --target ES6 --strict true --project tsconfigs/production.json
+
+- script: mocha test --reporter mocha-junit-reporter
+
+- script: npm test
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: JUnit
+    testResultsFiles: '**/TEST-RESULTS.xml'
+
+- task: PublishCodeCoverageResults@1
+  inputs: 
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
+
+- script: webpack
+
+- script: npm run build
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
+
+- script: |
+    npm install webpack webpack-cli --save-dev
+    npx webpack --config webpack.config.js
+
+- script: gulp                       # include any additional options that are needed
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/TEST-RESULTS.xml'
+    testRunTitle: 'Test results for JavaScript using gulp'
+
+- task: PublishCodeCoverageResults@1
+  inputs: 
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
+
+- script: grunt                      # include any additional options that are needed
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+      **\*.js
+      package.json
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+
+- script: npm publish
+
+- task: Npm@1
+  inputs:
+     command: publish
+     publishRegistry: useExternalRegistry
+     publishEndpoint: https://my.npmregistry.com
+
+- task: Npm@1
+  inputs:
+     command: publish
+     publishRegistry: useFeed
+     publishFeed: https://my.npmregistry.com
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+
