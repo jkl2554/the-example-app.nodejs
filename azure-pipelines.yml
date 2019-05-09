@@ -34,17 +34,6 @@ steps:
 - script: yarn install
   displayName: yarn install
 
-#- script: npm run compile
-
-#- script: tsc --target ES6 --strict true --project tsconfigs/production.json
-#  displayName: tsc --target ES6 --strict true --project tsconfigs/production.json
-
-#- script: mocha test --reporter mocha-junit-reporter
-#  displayName: mocha test --reporter mocha-junit-reporter
-
-- script: npm test
-  displayName: npm test
-
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
@@ -57,21 +46,8 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
-- script: webpack
-  displayName: webpack
-
 - script: npm run build
   displayName: npm run build
-
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 
-
-- script: |
-    npm install webpack webpack-cli --save-dev
-    npx webpack --config webpack.config.js
 
 - script: gulp                       # include any additional options that are needed
 
