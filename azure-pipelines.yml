@@ -24,9 +24,9 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install --only=dev #-g @angular/cli
-    npm run build 
-  displayName: 'npm install and build'
+    npm install #--only=dev #-g @angular/cli
+#    npm run build 
+  displayName: 'npm install'# and build'
 
 - script: npx mocha
 
